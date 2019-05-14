@@ -1,0 +1,367 @@
+#include<iostream>
+#include<bits/stdc++.h>
+
+using namespace std;
+struct Node{
+	int data;
+	struct Node *next;
+}*first = NULL ;
+struct summary{
+	struct Node* head;
+	struct Node* tale;
+}summary;
+
+void createList(int *a,int n){
+	struct Node *temp,*last;
+	first = (struct Node*)malloc(sizeof(struct Node));
+		first->data = a[0];
+		first->next = NULL;
+		last = first;
+	for(int i=1;i<n;i++){
+		temp =  (struct Node*)malloc(sizeof(struct Node));
+		temp->data = a[i];
+		temp->next = NULL;
+		last->next = temp;
+		last = temp;
+	}
+}
+void display(struct Node *p){
+	while(p!= NULL){
+		//std::cout<<"( "<<p->data <<" | "<<p->next <<" )--> ";
+		std::cout<<" "<<p->data <<" --> ";
+		p=p->next ;
+	}
+}
+void recDisplay(struct Node *p){
+	if(p==NULL)return;
+	else{
+		std::cout<<p->data <<"-> ";
+		recDisplay(p->next );
+	}
+}
+void recDisplayReverse(struct Node *p){
+	if(p==NULL)return ;
+	else{
+		recDisplayReverse(p->next );
+		std::cout<<p->data<<"-> " ;
+	}
+}
+
+/////   for counting the no of nodes in the given linked list ...
+int countNodes(struct Node *p){
+	static int count=0;
+	if(p==NULL)return count;
+	else {
+		++count;
+		countNodes(p->next);
+	}
+}
+int countingNodes(struct Node *p){
+	//int p=0;
+	if(p==0)return 0;
+	else {
+	return countingNodes(p->next)+1;
+	}
+}
+int oneMoreCountingMethod(struct Node* p){
+	int q=0;
+	if(p){
+		q=oneMoreCountingMethod(p->next);
+		return q+1;
+	}
+	else{
+		return q;
+	}
+}
+
+//    for adding the values of nodes in a given linked list...
+int recAddList(struct Node *p){
+	if(p==NULL){
+		return 0;
+	}
+	else
+	return recAddList(p->next )+ p->data ;
+}
+int itrAddList(struct Node *p){
+	int sum=0;
+	while(p){
+		sum=sum+p->data  ;
+		p=p->next;
+	}
+	return sum;
+}
+
+//   finding the largest node value and returning the that node
+struct Node* largestNode(struct Node *p){
+	struct Node *temp;		// writting this dosen't means that we allocated the space in the mem. its only pointer variable in stack mem.
+	temp = (struct Node*)malloc(sizeof(Node));
+	temp->data  = p->data;
+	while(p){
+		if(temp->data < p->data ) {
+			temp->data=p->data ;
+			temp->next = p->next ;
+		}
+			p=p->next;
+	}
+	return temp;
+}
+
+//  recursive version//////////////////////////////////////////////////////////confusion did't able to run
+
+//int recLargestNode(struct Node *p){
+//	int q=0;
+//	if(p==NULL)
+//		return MIN_INT;
+//	else{
+//		 q= recLargestNode(p->next);
+//		if(p->data < q){
+//			std::cout<<q<<"\n ";
+//		}else {
+//			std::cout<<p->data <<"\n ";          /////////////////     error
+//		}
+//	}
+//}
+//int Rmax(struct Node *p){
+//	int x=0;
+//	if(p==0)
+//		return INT32_MIN;
+//		x= Rmax(p->next);
+//	if(x>p->data)
+//		return x;
+//	else 
+//		return p->data;
+//}
+////////////////////////////////////////////////////////////////////////////////////
+
+////  improving the linked list linear search by move to front method
+void moveToFront(struct Node* p,int key){
+	struct Node *q,*r;
+	int found=0;
+	q=p->next;
+	r= first;
+	while(p){
+		if(q->data == key){
+		   found=1;
+		   break;	
+		}
+		else{
+			q=q->next ;
+			r=r->next ;
+		}			
+		p=p->next ;
+	}
+	if(found){
+		r->next = q->next ;
+		q->next = first ;
+		first=q;
+	}		
+}
+////  improving search by transposition method
+void transposition(struct Node *p,int key){
+	struct Node* r = p->next->next  ,*q = first,*m=p->next ;
+	int flag=0;
+	while(p){
+		if(r->data == key){
+			flag = 1;
+			break;
+		}
+		else{
+			q= q->next ;
+			r= r->next ;
+			m= m->next ;	
+		}
+		if(flag){
+			r->next = q->next ;
+			m->next = r->next ;
+			q->next = r->next ;
+		}
+	}
+}
+
+//   iterative version of searchNode....
+struct Node* searchNode(struct Node *p,int key){
+	int notFoundFlag=1;
+	while(p){
+		if(p->data == key){
+			std::cout<<"Search is found \t"<< p->data <<" "<<p->next<<std::endl;	
+			notFoundFlag = 0;
+			moveToFront(first,key);
+			return p;
+			break;
+		}
+		p=p->next ;
+	}
+	if (notFoundFlag){
+		std::cout<<"sorry the requested Node is not available in the list\n";
+	}
+}
+//   Recursive version of searchNode....
+struct Node* searchNodeRec(struct Node *p,int key){
+	if(p==NULL){
+		std::cout<<"sorry your given element is not found "<<std::endl;
+		return 0;
+	}						
+	else{
+		if(p->data == key){
+	     	std::cout<<"Search is found \t"<<p->data <<" "<<p->next<<std::endl;	
+	     	return p;
+		}
+		return searchNodeRec(p->next , key);
+	}
+}
+// Inserting the Node in given linked list
+
+void insertNode(int position,int key){
+	struct Node* t,*p=first;
+		t = new Node;
+		t->data = key;
+	if(position == 0){
+		t->next = first;
+		first = t;
+	}else if(position > 0){
+		for(int i=0;i<position-1;i++){
+			p = p->next;
+		}
+		 t->next = p->next ;
+		 p->next = t;
+	}
+}
+// Deletion of given Node and first node
+void deleting(struct Node* p, int position){
+	struct Node *q;
+	
+	if(position < 1 ){
+		return ;
+	}
+	else {
+		if(position == 1){
+			q = first;
+			first = first->next ;
+			std::cout<<"\nThe data deleted is = "<<q->data<<"\n";
+			delete(q);
+		}
+		else if(position > 1){
+			for(int i=0; i<position-1;i++){
+				q=p; 
+				p=p->next ;	
+			}
+			q->next  = p->next;
+			std::cout<<"\nthe deleted data is = "<< p->data<<"\n";
+			delete(p);
+		}
+	}
+}
+// Sorted insertion in the list
+bool is_Sorted(struct Node* p){
+	struct Node* q;
+	int temp = p->data;  p = p->next;
+	if(p->data > temp){	// First possiblity of being Increasing order
+		
+		int flag = 1;
+		while(p){
+			if(p->data < temp){
+				flag = 0;
+				std::cout<<"\nYour list isn't shorted\n";
+				return false;
+			}else{
+				temp = p->data ;
+			}
+			p = p->next ;
+		}
+		if(flag)std::cout<<"\nYour list is in increasing order\n";
+		return true;
+	}
+	if(p->data < temp){	// second possiblity of being Decreasing order
+		int flag = 1;
+		while(p){
+			if(p->data > temp){
+				flag = 0;
+				std::cout<<"\nYour list isn't shorted\n";
+				return false;		
+			}else{
+				temp = p->data ;
+			}
+			p = p->next ;	
+		}
+		if(flag)std::cout<<"\nYour list is in Decreasing order\n";
+		return true;
+	}
+}
+// Removing Duplicates from linked list
+void removingDuplicated(struct Node* p){
+	struct Node* q=p,*r=p;
+	p=p->next;
+	while(q&&p){
+		if(q->data == p->data ){
+			while(p->data == q->data &&p){
+				struct Node* temp = p;
+				std::cout<<"\nNode deleted is = "<<temp->data<<"\n";
+				q->next = temp->next ;
+				p = temp->next ;
+				delete(temp);
+				//q = q->next ;
+				//p = p->next ;
+			}
+		}
+		q = q->next ;
+		p = p->next ;
+	}
+}
+main(){
+	// truct Node *first;
+	int a[15]={10,9,9,9,9,5,4,3,3,3,2,2,2,2,1};
+	createList(a,15);
+	std::cout<<" \n";
+	display(first);
+
+//	recDisplay(first);
+//	std::cout<<" \n";
+//	recDisplayReverse(first);
+//	std::cout<<" \n";
+//	std::cout<<countNodes(first)<<std::endl;
+//	std::cout<<countingNodes(first)<<std::endl;
+//	std::cout<<oneMoreCountingMethod(first)<<std::endl;
+//	std::cout<<recAddList(first)<<std::endl;
+//	std::cout<<itrAddList(first)<<std::endl;
+//	struct Node *temp = largestNode(first);
+//	std::cout<<temp->data<<" "<<temp->next<<std::endl;
+	
+	//recLargestNode(first);
+	//std::cout<<Rmax(first)<<std::endl;
+/*  So here we are tying to demonstrate the search and optimising it by transpodition method and move to front */
+//struct Node *returnedPtr = searchNode(first,5);
+//returnedPtr = searchNode(first,4);
+//returnedPtr = searchNode(first,3);
+//	display(first);
+//	std::cout<<" \n";
+
+/* for inserting the node in given position*/
+//	std::cout<<" \n";
+//	insertNode(5,200);
+//	std::cout<<" \n";
+//	display(first);
+//	std::cout<<" \n";
+//	insertNode(8,500);
+//	std::cout<<" \n";
+//	display(first);
+//	std::cout<<" \n";
+
+//struct Node* returnPtr = searchNodeRec(first,66);
+//std::cout<<returnPtr->data <<" "<<returnPtr->next;
+
+/* deleting the required node */
+
+//	deleting(first,10);
+//	display(first);
+//	std::cout<<" \n";
+
+/* cheking weather the list is sorted or not */
+	//bool answer = is_Sorted(first);
+
+/*Removing Duplicates from sorted linked list*/
+	removingDuplicated(first);
+	std::cout<<"\n \n";
+	display(first);
+	std::cout<<" \n";
+
+}
