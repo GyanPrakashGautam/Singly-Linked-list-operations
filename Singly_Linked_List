@@ -4,11 +4,12 @@ using namespace std;
 struct Node{
 	int data;
 	struct Node *next;
-}*first = NULL ;
-//struct summary{
-//	struct Node* head;
-//	struct Node* tale;
-//}summary;
+}*first = NULL,*second = NULL,*third = NULL ;
+
+struct summary{
+	struct Node* head;
+	struct Node* tale;
+}summary;
 
 void createList(int *a,int n){
 	struct Node *temp,*last;
@@ -24,6 +25,7 @@ void createList(int *a,int n){
 		last = temp;
 	}
 }
+
 void display(struct Node *p){
 	while(p!= NULL){
 		//std::cout<<"( "<<p->data <<" | "<<p->next <<" )--> ";
@@ -47,6 +49,7 @@ void recDisplayReverse(struct Node *p){
 }
 
 /////   for counting the no of nodes in the given linked list ...
+
 int countNodes(struct Node *p){
 	static int count=0;
 	if(p==NULL)return count;
@@ -55,6 +58,7 @@ int countNodes(struct Node *p){
 		countNodes(p->next);
 	}
 }
+
 int countingNodes(struct Node *p){
 	//int p=0;
 	if(p==0)return 0;
@@ -62,6 +66,7 @@ int countingNodes(struct Node *p){
 	return countingNodes(p->next)+1;
 	}
 }
+
 int oneMoreCountingMethod(struct Node* p){
 	int q=0;
 	if(p){
@@ -81,6 +86,7 @@ int recAddList(struct Node *p){
 	else
 	return recAddList(p->next )+ p->data ;
 }
+
 int itrAddList(struct Node *p){
 	int sum=0;
 	while(p){
@@ -91,6 +97,7 @@ int itrAddList(struct Node *p){
 }
 
 //   finding the largest node value and returning the that node
+
 struct Node* largestNode(struct Node *p){
 	struct Node *temp;		// writting this dosen't means that we allocated the space in the mem. its only pointer variable in stack mem.
 	temp = (struct Node*)malloc(sizeof(Node));
@@ -133,6 +140,7 @@ struct Node* largestNode(struct Node *p){
 ////////////////////////////////////////////////////////////////////////////////////
 
 ////  improving the linked list linear search by move to front method
+
 void moveToFront(struct Node* p,int key){
 	struct Node *q,*r;
 	int found=0;
@@ -155,7 +163,9 @@ void moveToFront(struct Node* p,int key){
 		first=q;
 	}		
 }
+
 ////  improving search by transposition method
+
 void transposition(struct Node *p,int key){
 	struct Node* r = p->next->next  ,*q = first,*m=p->next ;
 	int flag=0;
@@ -171,13 +181,14 @@ void transposition(struct Node *p,int key){
 		}
 		if(flag){
 			r->next = q->next ;
-			m->next = r->next ;
+			m->next = r->next ; 
 			q->next = r->next ;
 		}
 	}
 }
 
 //   iterative version of searchNode....
+
 struct Node* searchNode(struct Node *p,int key){
 	int notFoundFlag=1;
 	while(p){
@@ -194,7 +205,9 @@ struct Node* searchNode(struct Node *p,int key){
 		std::cout<<"sorry the requested Node is not available in the list\n";
 	}
 }
+
 //   Recursive version of searchNode....
+
 struct Node* searchNodeRec(struct Node *p,int key){
 	if(p==NULL){
 		std::cout<<"sorry your given element is not found "<<std::endl;
@@ -208,6 +221,7 @@ struct Node* searchNodeRec(struct Node *p,int key){
 		return searchNodeRec(p->next , key);
 	}
 }
+
 // Inserting the Node in given linked list
 
 void insertNode(int position,int key){
@@ -225,7 +239,9 @@ void insertNode(int position,int key){
 		 p->next = t;
 	}
 }
+
 // Deletion of given Node and first node
+
 void deleting(struct Node* p, int position){
 	struct Node *q;
 	
@@ -250,7 +266,9 @@ void deleting(struct Node* p, int position){
 		}
 	}
 }
+
 // Sorted insertion in the list
+
 bool is_Sorted(struct Node* p){
 	struct Node* q;
 	int temp = p->data;  p = p->next;
@@ -286,13 +304,15 @@ bool is_Sorted(struct Node* p){
 		return true;
 	}
 }
+
 // Removing Duplicates from linked list
+
 void removingDuplicated(struct Node* p){
-	struct Node* q=p,*r=p;
+	struct Node* q=p;
 	p=p->next;
 	while(q&&p){
 		if(q->data == p->data ){
-			while(p->data == q->data &&p){
+			while(p->data == q->data &&p){		/////////////////////////    HAVE PROBLEM WITH END REDUNDENCIES
 				struct Node* temp = p;
 				std::cout<<"\nNode deleted is = "<<temp->data<<"\n";
 				q->next = temp->next ;
@@ -306,13 +326,95 @@ void removingDuplicated(struct Node* p){
 		p = p->next ;
 	}
 }
+
+// Reversing the linked list via Loop
+
+void reveselinkedlist_vialoop(struct Node* frontNode){    
+	struct Node* prevNode = NULL, *currentNode=NULL;
+	do{
+		prevNode = currentNode;
+		currentNode = frontNode;
+		if (frontNode!=NULL){
+			frontNode = frontNode->next ;
+			currentNode->next = prevNode;
+		}	
+	}while(currentNode != NULL);
+	first = prevNode;
+}
+
+//// Reversing the linked list via recursion
+
+//void reveselinkedlist_viaRecu(struct Node *prev ,struct Node *current){
+//	if(current->next == NULL){
+//		first = current ;										///////////  errror
+//	}
+//	if(current->next ){ 
+//	    reveselinkedlist_viaRecu(current,current->next);
+//		current->next = prev;
+//	}
+//}
+
+/* Mearging of two linked list */
+
+	void createsecondList(int *a,int n){
+		struct Node *temp,*last;
+			temp = (struct Node*)malloc(sizeof(struct Node));
+			temp->data = a[0];
+			temp->next = NULL;
+			last = second = temp;
+		for(int i=1;i<n;i++){
+			temp =  (struct Node*)malloc(sizeof(struct Node));
+			temp->data = a[i];
+			temp->next = NULL;
+			last->next = temp;
+			last = temp;
+		}
+	}
+	struct Node*  mearge(struct Node* first, struct Node* second){
+		struct Node* newHead=NULL,*newTale=NULL;
+		if(first->data < second->data ){
+			newHead = first;
+			newTale = first;
+			first = first->next ;
+			newTale->next = NULL;
+		}else{
+			newHead = second;
+			newTale = second;
+			second = second->next ;
+			newTale->next = NULL;
+		}
+		while(first && second){				//   H,T	F
+			if(first->data < second->data){//	F=	1   20->30->40
+				newTale -> next = first;
+				newTale = first;			//	S=	10   2->3->4->5
+				first = first->next;		//	T    S
+				newTale->next  = NULL;
+			}else{
+				newTale -> next = second;
+				newTale = second;
+				second = second -> next;
+				newTale->next = NULL;
+			}
+			if(first)newTale->next = first;
+			if(second)newTale->next = second;
+		}
+		return newHead;
+	}
+
 main(){
 	// truct Node *first;
-	int a[15]={10,9,9,9,9,5,4,3,3,3,2,2,2,2,1};
+	int a[15]={1,2,3,4,15,16,17,18,19,20,21,22,23,24,25};
 	createList(a,15);
-	std::cout<<" \n";
+	std::cout<<"First List \n ";
 	display(first);
-
+	std::cout<<" \n ";
+	
+	int b[5]={5,16,7,8,9};
+	createsecondList(b,5);
+ 	std::cout<<"Second List \n ";
+	display(second);
+	std::cout<<" \n\n\n";
+ 
 //	recDisplay(first);
 //	std::cout<<" \n";
 //	recDisplayReverse(first);
@@ -327,7 +429,7 @@ main(){
 	
 	//recLargestNode(first);
 	//std::cout<<Rmax(first)<<std::endl;
-/*  So here we are tying to demonstrate the search and optimising it by transpodition method and move to front */
+/*  So here i am tying to demonstrate the search and optimising it by transposition method and move to front */
 //struct Node *returnedPtr = searchNode(first,5);
 //returnedPtr = searchNode(first,4);
 //returnedPtr = searchNode(first,3);
@@ -358,9 +460,35 @@ main(){
 	//bool answer = is_Sorted(first);
 
 /*Removing Duplicates from sorted linked list*/
-	removingDuplicated(first);
-	std::cout<<"\n \n";
-	display(first);
-	std::cout<<" \n";
+//	removingDuplicated(first);
+//	std::cout<<"\n \n";
+//	display(first);
+//	std::cout<<" \n";
+
+
+/* Reversing the linked list via loops */
+
+//reveselinkedlist_vialoop(first);
+//	std::cout<<"\n \n";
+//	display(first);
+//	std::cout<<" \n";
+
+/* Reverse the linked list via recursion*/
+
+//struct Node*q = NULL;
+//reveselinkedlist_viaRecu(q,first);
+//	std::cout<<"\n \n";
+//	display(first);
+//	std::cout<<" \n";
+
+
+/*Now mearging the two given linked list */
+    //struct Node* head = mearge(first,second);
+	//std::cout<<"\n \n";
+	//display(head);
+	//std::cout<<" \n";
+
+
+
 
 }
